@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useOnClickOutside } from "usehooks-ts";
 
 const GAMES = [
@@ -61,57 +61,84 @@ const App = () => {
   }, []);
   return (
     <div className="relative h-dvh flex w-full min-w-[300px] items-center justify-center p-6">
-      {activeGame ? (
-        <>
-          <div className="pointer-events-none absolute inset-0 z-10 bg-neutral-300/20" />
-          <div className="absolute inset-0 z-10 grid place-items-center">
-            <div
-              className="flex h-fit max-w-[500px] cursor-pointer flex-col items-start gap-4 overflow-hidden border border-neutral-400 bg-white p-4"
-              ref={ref}
-              style={{ borderRadius: 12 }}
-            >
-              <div className="flex w-full items-center gap-4">
-                <span>
-                  <img
-                    alt="Game"
-                    src={activeGame.image}
-                    style={{ borderRadius: 12 }}
-                    className="h-14 w-14"
-                  />
-                </span>
+      <AnimatePresence>
+        {activeGame ? (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="pointer-events-none absolute inset-0 z-10 bg-neutral-300/40"
+            />
+            <div className="absolute inset-0 z-10 grid place-items-center">
+              <motion.div
+                layoutId={`game-${activeGame.title}`}
+                className="flex h-fit max-w-[500px] cursor-pointer flex-col items-start gap-4 overflow-hidden border border-neutral-400 bg-white p-4"
+                ref={ref}
+                style={{ borderRadius: 12 }}
+              >
+                <div className="flex w-full items-center gap-4">
+                  <span>
+                    <motion.img
+                      layoutId={`image-${activeGame.title}`}
+                      alt="Game"
+                      src={activeGame.image}
+                      style={{ borderRadius: 12 }}
+                      className="h-14 w-14"
+                    />
+                  </span>
 
-                <div className="flex flex-grow items-center justify-between">
-                  <div className="flex flex-col py-3">
-                    <h2 className="text-sm font-semibold text-neutral-700">
-                      {activeGame.title}
-                    </h2>
-                    <p className="text-sm text-neutral-500">
-                      {activeGame.description}
-                    </p>
+                  <div className="flex flex-grow items-center justify-between">
+                    <div className="flex flex-col py-3">
+                      <motion.h2
+                        layoutId={`heading-${activeGame.title}`}
+                        className="text-sm font-semibold text-neutral-700"
+                      >
+                        {activeGame.title}
+                      </motion.h2>
+                      <motion.p
+                        layoutId={`paragraph-${activeGame.description}`}
+                        className="text-sm text-neutral-500"
+                      >
+                        {activeGame.description}
+                      </motion.p>
+                    </div>
+                    <motion.button
+                      layoutId={`paragraph-${activeGame.title}`}
+                      className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-blue-600"
+                    >
+                      Get
+                    </motion.button>
                   </div>
-                  <button className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-blue-600">
-                    Get
-                  </button>
                 </div>
-              </div>
-              <p className="text-sm text-neutral-600">
-                {activeGame.longDescription}
-              </p>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.1 }}
+                  className="text-sm text-neutral-600"
+                >
+                  {activeGame.longDescription}
+                </motion.p>
+              </motion.div>
             </div>
-          </div>
-        </>
-      ) : null}
+          </>
+        ) : null}
+      </AnimatePresence>
 
       <ul className="relative my-12 flex w-full flex-col items-center p-0">
         {GAMES.map((game) => (
           <motion.li
+            layoutId={`game-${game.title}`}
+            whileTap={{ scale: 0.95 }}
             key={game.title}
             onClick={() => setActiveGame(game)}
             style={{ borderRadius: 8 }}
             className="flex w-full cursor-pointer items-center gap-4 p-0 sm:w-[368px]"
           >
             <span>
-              <img
+              <motion.img
+                layoutId={`image-${game.title}`}
                 alt="Game"
                 src={game.image}
                 style={{ borderRadius: 12 }}
@@ -121,14 +148,25 @@ const App = () => {
             </span>
             <div className="flex flex-grow items-center justify-between border-b border-neutral-300">
               <div className="flex flex-col py-4">
-                <h2 className="text-sm font-semibold text-neutral-700 ">
+                <motion.h2
+                  layoutId={`heading-${game.title}`}
+                  className="text-sm font-semibold text-neutral-700 "
+                >
                   {game.title}
-                </h2>
-                <p className="text-sm text-neutral-500">{game.description}</p>
+                </motion.h2>
+                <motion.p
+                  layoutId={`paragraph-${game.description}`}
+                  className="text-sm text-neutral-500"
+                >
+                  {game.description}
+                </motion.p>
               </div>
-              <button className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-blue-600">
+              <motion.button
+                layoutId={`paragraph-${game.title}`}
+                className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-blue-600"
+              >
                 Get
-              </button>
+              </motion.button>
             </div>
           </motion.li>
         ))}
